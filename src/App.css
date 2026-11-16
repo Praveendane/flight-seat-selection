@@ -1,0 +1,264 @@
+
+.app-container {
+  min-height: 100vh;
+  background: #f5f7fb;
+}
+
+.header {
+  height: 76px;
+  padding: 0 7%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e9edf4;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 25px;
+  font-weight: 800;
+  color: #142b50;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #eaf1ff;
+  color: #2864dc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-highlight {
+  color: #2864dc;
+}
+
+.nav-links {
+  display: flex;
+  gap: 35px;
+}
+
+.nav-links a {
+  color: #64748b;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.nav-links a:hover {
+  color: #2864dc;
+}
+
+.header-actions,
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-profile {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #dce8ff;
+  color: #2864dc;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+}
+
+.mobile-menu {
+  display: none;
+}
+
+.main-content {
+  max-width: 1200px;
+  width: 86%;
+  margin: 45px auto;
+}
+
+.flight-info {
+  width: 100%;
+}
+
+.flight-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  color: #2864dc;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.flight-heading h1 {
+  font-size: 32px;
+  color: #142b50;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  color: #718096;
+  font-size: 14px;
+}
+
+.flight-status {
+  padding: 10px 15px;
+  border-radius: 30px;
+  background: #e8f8ef;
+  color: #16834c;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22b573;
+  margin-right: 7px;
+}
+
+.flight-card {
+  background: #ffffff;
+  border: 1px solid #e9edf4;
+  border-radius: 18px;
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: 0 8px 30px rgba(20, 43, 80, 0.04);
+}
+
+.airport {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.airport-code {
+  font-size: 32px;
+  font-weight: 800;
+  color: #142b50;
+}
+
+.airport-name,
+.flight-time {
+  font-size: 13px;
+  color: #718096;
+}
+
+.flight-time {
+  color: #334155;
+  font-weight: 700;
+}
+
+.flight-route {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.flight-duration,
+.flight-number {
+  font-size: 11px;
+  color: #718096;
+}
+
+.flight-duration {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.route-line {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  color: #2864dc;
+}
+
+.route-line span {
+  flex: 1;
+  height: 1px;
+  border-top: 2px dashed #cbd5e1;
+}
+
+.flight-date {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-left: 1px solid #e9edf4;
+  padding-left: 25px;
+}
+
+.flight-date span {
+  font-size: 11px;
+  color: #718096;
+}
+
+.flight-date strong {
+  font-size: 14px;
+  color: #142b50;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0 5%;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .mobile-menu {
+    display: block;
+  }
+
+  .main-content {
+    width: 92%;
+    margin: 30px auto;
+  }
+
+  .flight-heading {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
+
+  .flight-card {
+    flex-wrap: wrap;
+    padding: 20px;
+  }
+
+  .flight-route {
+    min-width: 100%;
+    order: 3;
+  }
+
+  .flight-date {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #e9edf4;
+    padding: 15px 0 0;
+  }
+}
