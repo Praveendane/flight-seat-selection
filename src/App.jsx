@@ -6,6 +6,7 @@ import FlightInfo from "./components/FlightInfo";
 import SeatMap from "./components/SeatMap";
 import PassengerList from "./components/PassengerList";
 import BookingSummary from "./components/BookingSummary";
+import MealSelection from "./components/MealSelection";
 
 import useSeatSelection from "./hooks/useSeatSelection";
 
@@ -15,7 +16,7 @@ function App() {
   // Store the aircraft configuration.
   const [layout, setLayout] = useState("3-2");
 
-  // Get passenger and seat assignment functionality.
+  // Get passenger, seat and meal management functionality.
   const {
     passengers,
     activePassengerId,
@@ -25,6 +26,8 @@ function App() {
     assignSeat,
     removeSeat,
     getPassengerSeat,
+    selectMeal,
+    getPassengerMeal,
   } = useSeatSelection();
 
   return (
@@ -52,9 +55,18 @@ function App() {
             onSeatSelect={assignSeat}
           />
         </div>
+
+        <MealSelection
+          activePassengerId={activePassengerId}
+          getPassengerMeal={getPassengerMeal}
+          onMealSelect={selectMeal}
+        />
+
         <BookingSummary
-        passengers={passengers}
-        getPassengerSeat={getPassengerSeat}/>
+          passengers={passengers}
+          getPassengerSeat={getPassengerSeat}
+          getPassengerMeal={getPassengerMeal}
+        />
       </main>
     </div>
   );

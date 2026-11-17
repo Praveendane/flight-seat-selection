@@ -1,35 +1,64 @@
 
-import { Receipt, Armchair, Users } from "lucide-react";
+import { Receipt, Armchair, Users, Utensils } from "lucide-react";
 import { getSeatPrice } from "../data/seats";
 
-function BookingSummary({ passengers, getPassengerSeat }) {
-  // Calculate the price for each passenger.
+const mealPrices = {
+  vegetarian: 250,
+  "non-vegetarian": 350,
+  none: 0,
+};
+
+const mealNames = {
+  vegetarian: "Vegetarian Meal",
+  "non-vegetarian": "Non-Vegetarian Meal",
+  none: "No Meal",
+};
+
+function BookingSummary({
+  passengers,
+  getPassengerSeat,
+  getPassengerMeal,
+}) {
+  // Calculate seat and meal charges for every passenger.
   const passengerDetails = passengers.map((passenger) => {
     const seat = getPassengerSeat(passenger.id);
+    const meal = getPassengerMeal(passenger.id);
 
-    // Convert seat ID such as "2A" into row and letter.
     const row = seat ? Number.parseInt(seat, 10) : null;
     const letter = seat ? seat.replace(/[0-9]/g, "") : null;
 
-    const price =
+    const seatPrice =
       seat && row && letter
         ? getSeatPrice(row, letter)
         : 0;
 
+    const mealPrice = mealPrices[meal] ?? 0;
+
     return {
       ...passenger,
       seat,
-      price,
+      meal,
+      seatPrice,
+      mealPrice,
+      total: seatPrice + mealPrice,
     };
   });
 
-  // Calculate the total price of all assigned seats.
-  const totalPrice = passengerDetails.reduce(
-    (total, passenger) => total + passenger.price,
+  // Calculate total seat charges.
+  const totalSeatPrice = passengerDetails.reduce(
+    (total, passenger) => total + passenger.seatPrice,
     0
   );
 
-  // Count passengers who have selected seats.
+  // Calculate total meal charges.
+  const totalMealPrice = passengerDetails.reduce(
+    (total, passenger) => total + passenger.mealPrice,
+    0
+  );
+
+  // Calculate the final booking total.
+  const grandTotal = totalSeatPrice + totalMealPrice;
+
   const assignedCount = passengerDetails.filter(
     (passenger) => passenger.seat
   ).length;
@@ -47,9 +76,7 @@ function BookingSummary({ passengers, getPassengerSeat }) {
       <div className="summary-statistics">
         <div>
           <Users size={17} />
-          <span>
-            {passengers.length} Passengers
-          </span>
+          <span>{passengers.length} Passengers</span>
         </div>
 
         <div>
@@ -63,33 +90,60 @@ function BookingSummary({ passengers, getPassengerSeat }) {
       <div className="summary-passengers">
         {passengerDetails.map((passenger) => (
           <div className="summary-passenger" key={passenger.id}>
-            <div>
+            <div className="summary-passenger-info">
               <strong>{passenger.name}</strong>
+
               <span>
-                {passenger.seat
-                  ? `Seat ${passenger.seat}`
-                  : "No seat selected"}
+                Seat: {passenger.seat || "Not selected"}
+              </span>
+
+              <span>
+                Meal: {mealNames[passenger.meal] || "No Meal"}
               </span>
             </div>
 
-            <strong>
-              {passenger.seat
-                ? passenger.price === 0
+            <div className="summary-passenger-prices">
+              <span>
+                Seat: {passenger.seatPrice === 0
                   ? "Free"
-                  : `₹${passenger.price}`
-                : "—"}
-            </strong>
+                  : `₹${passenger.seatPrice}`}
+              </span>
+
+              <span>
+                Meal: {passenger.mealPrice === 0
+                  ? "Free"
+                  : `₹${passenger.mealPrice}`}
+              </span>
+
+              <strong>
+                ₹{passenger.total.toLocaleString("en-IN")}
+              </strong>
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="summary-total">
+      <div className="summary-breakdown">
         <div>
-          <span>Total Seat Price</span>
-          <small>Including all assigned seats</small>
+          <span>Seat Charges</span>
+          <strong>₹{totalSeatPrice.toLocaleString("en-IN")}</strong>
         </div>
 
-        <strong>₹{totalPrice.toLocaleString("en-IN")}</strong>
+        <div>
+          <span>Meal Charges</span>
+          <strong>₹{totalMealPrice.toLocaleString("en-IN")}</strong>
+        </div>
+      </div>
+
+      <div className="summary-total">
+        <div>
+          <span>Grand Total</span>
+          <small>Including seats and meals</small>
+        </div>
+
+        <strong>
+          ₹{grandTotal.toLocaleString("en-IN")}
+        </strong>
       </div>
     </section>
   );

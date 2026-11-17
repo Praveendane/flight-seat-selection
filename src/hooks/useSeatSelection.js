@@ -14,6 +14,9 @@ function useSeatSelection() {
   // Store seat assignments using passenger IDs.
   const [assignments, setAssignments] = useState({});
 
+  // Store meal selections using passenger IDs.
+  const [mealSelections, setMealSelections] = useState({});
+
   // Change the number of passengers.
   const updatePassengerCount = (count) => {
     const newPassengers = Array.from(
@@ -26,9 +29,11 @@ function useSeatSelection() {
 
     setPassengers(newPassengers);
 
-    // Remove assignments belonging to deleted passengers.
+    // Remove seat assignments belonging to deleted passengers.
     setAssignments((previous) => {
-      const validIds = newPassengers.map((passenger) => passenger.id);
+      const validIds = newPassengers.map(
+        (passenger) => passenger.id
+      );
 
       return Object.fromEntries(
         Object.entries(previous).filter(([passengerId]) =>
@@ -37,7 +42,20 @@ function useSeatSelection() {
       );
     });
 
-    // Keep the active passenger within the selected passenger count.
+    // Remove meal selections belonging to deleted passengers.
+    setMealSelections((previous) => {
+      const validIds = newPassengers.map(
+        (passenger) => passenger.id
+      );
+
+      return Object.fromEntries(
+        Object.entries(previous).filter(([passengerId]) =>
+          validIds.includes(passengerId)
+        )
+      );
+    });
+
+    // Keep the active passenger within the selected count.
     setActivePassengerId((current) =>
       newPassengers.some((passenger) => passenger.id === current)
         ? current
@@ -46,29 +64,28 @@ function useSeatSelection() {
   };
 
   // Assign a seat to the active passenger.
-  
-const assignSeat = (seatId) => {
-  setAssignments((previous) => {
-    // Prevent selecting a seat already assigned to another passenger.
-    const isAlreadyAssigned = Object.entries(previous).some(
-      ([passengerId, assignedSeat]) =>
-        assignedSeat === seatId &&
-        passengerId !== activePassengerId
-    );
+  const assignSeat = (seatId) => {
+    setAssignments((previous) => {
+      // Prevent selecting a seat assigned to another passenger.
+      const isAlreadyAssigned = Object.entries(previous).some(
+        ([passengerId, assignedSeat]) =>
+          assignedSeat === seatId &&
+          passengerId !== activePassengerId
+      );
 
-    if (isAlreadyAssigned) {
-      return previous;
-    }
+      if (isAlreadyAssigned) {
+        return previous;
+      }
 
-    // Remove the active passenger's previous seat.
-    return {
+      // Replace the active passenger's previous seat.
+      return {
         ...previous,
         [activePassengerId]: seatId,
-        };
+      };
     });
   };
 
-  // Remove the active passenger's assigned seat.
+  // Remove a passenger's assigned seat.
   const removeSeat = (passengerId = activePassengerId) => {
     setAssignments((previous) => {
       const updated = { ...previous };
@@ -84,15 +101,31 @@ const assignSeat = (seatId) => {
     return assignments[passengerId] || null;
   };
 
+  // Select a meal for the active passenger.
+  const selectMeal = (mealId) => {
+    setMealSelections((previous) => ({
+      ...previous,
+      [activePassengerId]: mealId,
+    }));
+  };
+
+  // Get the selected meal for a passenger.
+  const getPassengerMeal = (passengerId) => {
+    return mealSelections[passengerId] || "none";
+  };
+
   return {
     passengers,
     activePassengerId,
     setActivePassengerId,
     assignments,
+    mealSelections,
     updatePassengerCount,
     assignSeat,
     removeSeat,
     getPassengerSeat,
+    selectMeal,
+    getPassengerMeal,
   };
 }
 
