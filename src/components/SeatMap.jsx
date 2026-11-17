@@ -1,4 +1,3 @@
-
 import {
   getSeatPrice,
   getSeatCategory,
@@ -8,126 +7,243 @@ import {
 function SeatMap({
   layout,
   onLayoutChange,
-  assignments,
+  passengers = [],
   activePassengerId,
-  onSeatSelect,
+  getPassengerSeat,
+  assignSeat,
 }) {
-  // Define seat groups based on the aircraft configuration.
+  // Aircraft seating configurations.
   const seatGroups =
     layout === "3-2"
       ? [["A", "B", "C"], ["D", "E"]]
       : [["A", "B"], ["D", "E", "F"], ["G", "H"]];
 
-  // Generate eight rows.
+  // Generate eight seat rows.
   const rows = Array.from({ length: 8 }, (_, index) => index + 1);
 
+  // Find the active passenger.
+  const activePassenger = passengers.find(
+    (passenger) => passenger.id === activePassengerId
+  );
+
   // Get the active passenger's assigned seat.
-  const selectedSeat = assignments[activePassengerId];
+  const activePassengerSeat = activePassenger
+    ? getPassengerSeat(activePassenger.id)
+    : null;
+
+  // Handle seat selection.
+  const handleSeatClick = (seatId) => {
+    if (!activePassenger) return;
+
+    if (isSeatOccupied(seatId)) return;
+
+    // Prevent selecting a seat assigned to another passenger.
+    const assignedToOther = passengers.some(
+      (passenger) =>
+        passenger.id !== activePassengerId &&
+        getPassengerSeat(passenger.id) === seatId
+    );
+
+    if (assignedToOther) return;
+
+    // Assign the seat to the active passenger.
+    assignSeat(seatId);
+  };
+
+  // Determine the visual state of a seat.
+  const getSeatState = (seatId) => {
+    if (isSeatOccupied(seatId)) return "occupied";
+
+    const assignedToOther = passengers.some(
+      (passenger) =>
+        passenger.id !== activePassengerId &&
+        getPassengerSeat(passenger.id) === seatId
+    );
+
+    if (assignedToOther) return "assigned";
+
+    if (activePassengerSeat === seatId) return "selected";
+
+    const row = Number(seatId.slice(0, -1));
+    const letter = seatId.slice(-1);
+    const price = getSeatPrice(row, letter);
+
+    return getSeatCategory(price);
+  };
 
   return (
     <section className="seat-map-section">
-      <div className="seat-map-heading">
+
+      {/* Seat map heading and layout selector */}
+      <div className="seat-map-header">
         <div>
-          <p className="eyebrow">AIRCRAFT LAYOUT</p>
-          <h2>Select your preferred seat</h2>
-          <p className="subtitle">
-            Selecting for {activePassengerId}
-          </p>
+          <h2>Select Your Seat</h2>
+          <p>Choose a seat for{" "}
+            <strong className="active-passenger-name">{activePassenger?.name || "Select a passenger"}</strong></p>
         </div>
 
-        <div className="layout-switch">
-          <button
-            className={layout === "3-2" ? "active" : ""}
-            onClick={() => onLayoutChange("3-2")}
-          >
-            3–2
-          </button>
+        {/* Aircraft layout selector */}
+        <div className="layout-selector">
+          <span className="layout-selector-label">
+            Aircraft Layout
+          </span>
 
-          <button
-            className={layout === "2-3-2" ? "active" : ""}
-            onClick={() => onLayoutChange("2-3-2")}
-          >
-            2–3–2
-          </button>
+          <div className="layout-select-wrapper">
+            <select
+              className="layout-select"
+              value={layout}
+              onChange={(event) => onLayoutChange(event.target.value)}
+              aria-label="Select aircraft seating configuration"
+            >
+              <option value="3-2">3–2 Configuration</option>
+              <option value="2-3-2">2–3–2 Configuration</option>
+            </select>
+
+            <span className="layout-select-arrow"></span>
+          </div>
         </div>
       </div>
 
-      <div className="seat-map-card">
-        <div className="aircraft-label">FRONT OF AIRCRAFT</div>
+      <div className="seat-map-content">
 
-        <div className="cockpit">
-          <span>✈</span>
-        </div>
+        {/* Aircraft seat map */}
+        <div className="seat-map-card">
+          <div className="aircraft-label">
+            AIRCRAFT SEAT MAP
+          </div>
 
-        <div className="seat-column-labels">
-          <span>ROW</span>
+          {/* Seat column labels */}
+          <div className="seat-column-labels">
+            <span className="row-number-label">Row</span>
 
-          {seatGroups.map((group, groupIndex) => (
-            <div className="seat-group" key={groupIndex}>
-              {group.map((letter) => (
-                <span key={letter}>{letter}</span>
-              ))}
-            </div>
-          ))}
-        </div>
+            {seatGroups.map((group, groupIndex) => (
+              <div className="seat-group" key={groupIndex}>
+                {group.map((letter) => (
+                  <span key={letter}>{letter}</span>
+                ))}
+              </div>
+            ))}
+          </div>
 
-        <div className="aircraft-seats">
-          {rows.map((row) => (
-            <div className="seat-row" key={row}>
-              <span className="row-number">{row}</span>
+          {/* Seat rows */}
+          <div className="aircraft-seats">
+            {rows.map((row) => (
+              <div className="seat-row" key={row}>
+                <span className="row-number">{row}</span>
 
-              {seatGroups.map((group, groupIndex) => (
-                <div className="seat-group" key={groupIndex}>
-                  {group.map((letter) => {
-                    const seatId = `${row}${letter}`;
-                    const price = getSeatPrice(row, letter);
-                    const category = getSeatCategory(price);
-                    const occupied = isSeatOccupied(seatId);
+                {seatGroups.map((group, groupIndex) => (
+                  <div className="seat-group" key={groupIndex}>
+                    {group.map((letter) => {
+                      const seatId = `${row}${letter}`;
+                      const price = getSeatPrice(row, letter);
+                      const state = getSeatState(seatId);
 
-                    const assignedPassenger = Object.entries(
-                      assignments
-                    ).find(([, assignedSeat]) => assignedSeat === seatId)?.[0];
+                      const unavailable =
+                        state === "occupied" ||
+                        state === "assigned";
 
-                    const assignedToOther =
-                      assignedPassenger &&
-                      assignedPassenger !== activePassengerId;
+                      const category = getSeatCategory(price);
 
-                    const isSelected = selectedSeat === seatId;
-
-                    const isUnavailable =
-                      occupied || Boolean(assignedToOther);
-
-                    return (
-                      <button
-                        key={seatId}
-                        className={`seat ${category} ${
-                          occupied
-                            ? "occupied"
-                            : assignedToOther
-                              ? "assigned"
-                              : isSelected
+                      return (
+                        <button
+                          key={seatId}
+                          type="button"
+                          className={`seat ${state}`}
+                          disabled={unavailable || !activePassenger}
+                          aria-label={`Seat ${seatId}, ${
+                            unavailable
+                              ? state
+                              : state === "selected"
                                 ? "selected"
-                                : "available"
-                        }`}
-                        disabled={isUnavailable}
-                        onClick={() => onSeatSelect(seatId)}
-                        title={`${seatId} - ₹${price}`}
-                        aria-label={`${seatId}, ₹${price}`}
-                      >
-                        <span>{seatId}</span>
-                        <small>₹{price}</small>
-                      </button>
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
-          ))}
+                                : category
+                          }, ${
+                            unavailable
+                              ? "unavailable"
+                              : `₹${price}`
+                          }`}
+                          aria-pressed={state === "selected"}
+                          title={
+                            unavailable
+                              ? `${seatId} - ${state}`
+                              : `${seatId} - ₹${price}`
+                          }
+                          onClick={() => handleSeatClick(seatId)}
+                        >
+                          <span>{letter}</span>
+
+                          {!unavailable && (
+                            <small>
+                              {price === 0 ? "Free" : `₹${price}`}
+                            </small>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="aircraft-label aircraft-rear">
-          REAR OF AIRCRAFT
-        </div>
+        {/* Seat categories and pricing */}
+        <aside className="seat-category-panel">
+
+          <div className="seat-category-heading">
+            <h3>Seat Categories & Pricing</h3>
+            <p>Understand seat types and availability.</p>
+          </div>
+
+          <div className="seat-category-list">
+
+            {/* Standard seats */}
+            <div className="seat-category-item">
+              <span className="category-color standard-color" />
+
+              <div>
+                <strong>Standard</strong>
+                <small>Regular seating</small>
+              </div>
+
+              <strong>₹0</strong>
+            </div>
+
+            {/* Premium seats */}
+            <div className="seat-category-item">
+              <span className="category-color premium-color" />
+
+              <div>
+                <strong>Premium</strong>
+                <small>Premium seating</small>
+              </div>
+
+              <strong>₹250</strong>
+            </div>
+
+            {/* Extra legroom seats */}
+            <div className="seat-category-item">
+              <span className="category-color legroom-color" />
+
+              <div>
+                <strong>Extra Legroom</strong>
+                <small>Additional leg space</small>
+              </div>
+
+              <strong>₹350</strong>
+            </div>
+
+            {/* Occupied / unavailable seats */}
+            <div className="seat-category-item">
+              <span className="category-color occupied-color" />
+
+              <div>
+                <strong>Occupied / Unavailable</strong>
+                <small>Cannot be selected</small>
+              </div>
+            </div>
+
+          </div>
+        </aside>
       </div>
     </section>
   );

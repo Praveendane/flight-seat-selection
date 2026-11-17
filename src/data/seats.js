@@ -1,4 +1,5 @@
 
+// Occupied seats (mock data).
 const OCCUPIED_SEATS = new Set([
   "1A",
   "2C",
@@ -10,16 +11,40 @@ const OCCUPIED_SEATS = new Set([
   "8E",
 ]);
 
+// Seat pricing categories.
 const SEAT_PRICES = {
   EXTRA_LEGROOM: 350,
   PREMIUM: 250,
-  PREFERRED: 200,
   STANDARD: 0,
 };
 
-// Calculate the price of a valid seat.
+// Distribute paid seats across different rows.
+// Avoid assigning paid prices to occupied seats.
+const PRICED_SEATS = {
+  // Extra Legroom – ₹350
+  "1C": 350,
+  "2A": 350,
+  "3B": 350,
+  "4D": 350,
+  "5A": 350,
+  "6E": 350,
+  "7B": 350,
+  "8D": 350,
+
+  // Premium – ₹250
+  "1E": 250,
+  "2D": 250,
+  "3A": 250,
+  "4E": 250,
+  "5B": 250,
+  "6D": 250,
+  "7E": 250,
+  "8B": 250,
+};
+
+// Calculate the price of a seat.
 export const getSeatPrice = (row, letter) => {
-  const validColumns = ["A", "B", "C", "D", "E", "F", "G"];
+  const validColumns = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
   if (
     !Number.isInteger(row) ||
@@ -30,22 +55,12 @@ export const getSeatPrice = (row, letter) => {
     return 0;
   }
 
-  if (letter === "C" && row <= 3) {
-    return SEAT_PRICES.EXTRA_LEGROOM;
-  }
+  const seatId = `${row}${letter}`;
 
-  if (row === 1 && letter === "E") {
-    return SEAT_PRICES.PREMIUM;
-  }
-
-  if (row >= 4 && letter === "A") {
-    return SEAT_PRICES.PREFERRED;
-  }
-
-  return SEAT_PRICES.STANDARD;
+  return PRICED_SEATS[seatId] ?? SEAT_PRICES.STANDARD;
 };
 
-// Identify the category of each seat.
+// Identify the category of a seat.
 export const getSeatCategory = (price) => {
   switch (price) {
     case SEAT_PRICES.EXTRA_LEGROOM:
@@ -53,9 +68,6 @@ export const getSeatCategory = (price) => {
 
     case SEAT_PRICES.PREMIUM:
       return "premium";
-
-    case SEAT_PRICES.PREFERRED:
-      return "preferred";
 
     default:
       return "standard";

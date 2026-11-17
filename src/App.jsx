@@ -237,9 +237,10 @@ function App() {
           <SeatMap
             layout={layout}
             onLayoutChange={handleLayoutChange}
-            assignments={assignments}
+            passengers={passengers}
+            assignSeat={assignSeat}
             activePassengerId={activePassengerId}
-            onSeatSelect={assignSeat}
+            getPassengerSeat={getPassengerSeat}
           />
         </div>
 
