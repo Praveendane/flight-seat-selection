@@ -1,8 +1,22 @@
 
+/* =========================================
+   GLOBAL APP LAYOUT
+========================================= */
+
 .app-container {
   min-height: 100vh;
   background: #f5f7fb;
 }
+
+.main-content {
+  max-width: 1200px;
+  width: 86%;
+  margin: 45px auto;
+}
+
+/* =========================================
+   HEADER
+========================================= */
 
 .header {
   height: 76px;
@@ -81,11 +95,26 @@
   display: none;
 }
 
-.main-content {
-  max-width: 1200px;
-  width: 86%;
-  margin: 45px auto;
+/* =========================================
+   COMMON TEXT
+========================================= */
+
+.eyebrow {
+  color: #2864dc;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
 }
+
+.subtitle {
+  color: #718096;
+  font-size: 14px;
+}
+
+/* =========================================
+   FLIGHT INFORMATION
+========================================= */
 
 .flight-info {
   width: 100%;
@@ -98,23 +127,10 @@
   margin-bottom: 28px;
 }
 
-.eyebrow {
-  color: #2864dc;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 2px;
-  margin-bottom: 10px;
-}
-
 .flight-heading h1 {
   font-size: 32px;
   color: #142b50;
   margin-bottom: 8px;
-}
-
-.subtitle {
-  color: #718096;
-  font-size: 14px;
 }
 
 .flight-status {
@@ -221,50 +237,9 @@
   color: #142b50;
 }
 
-@media (max-width: 768px) {
-  .header {
-    padding: 0 5%;
-  }
-
-  .nav-links {
-    display: none;
-  }
-
-  .mobile-menu {
-    display: block;
-  }
-
-  .main-content {
-    width: 92%;
-    margin: 30px auto;
-  }
-
-  .flight-heading {
-    align-items: flex-start;
-    gap: 15px;
-    flex-direction: column;
-  }
-
-  .flight-card {
-    flex-wrap: wrap;
-    padding: 20px;
-  }
-
-  .flight-route {
-    min-width: 100%;
-    order: 3;
-  }
-
-  .flight-date {
-    width: 100%;
-    border-left: none;
-    border-top: 1px solid #e9edf4;
-    padding: 15px 0 0;
-  }
-}
-
-
-/* Seat map section */
+/* =========================================
+   SEAT MAP
+========================================= */
 
 .seat-map-section {
   margin-top: 40px;
@@ -309,6 +284,8 @@
 }
 
 .seat-map-card {
+  width: 100%;
+  min-width: 0;
   background: #ffffff;
   border: 1px solid #e9edf4;
   border-radius: 20px;
@@ -318,6 +295,7 @@
   align-items: center;
   box-shadow: 0 8px 30px rgba(20, 43, 80, 0.04);
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .aircraft-label {
@@ -347,6 +325,7 @@
   align-items: center;
   justify-content: center;
   gap: 22px;
+  flex-wrap: nowrap;
 }
 
 .seat-column-labels {
@@ -359,6 +338,7 @@
 .seat-group {
   display: flex;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .seat-column-labels .seat-group {
@@ -368,16 +348,19 @@
 .seat-column-labels .seat-group span {
   width: 55px;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .aircraft-seats {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex-shrink: 0;
 }
 
 .row-number {
   width: 30px;
+  flex-shrink: 0;
   color: #94a3b8;
   font-size: 12px;
   text-align: center;
@@ -387,6 +370,7 @@
 .seat {
   width: 55px;
   height: 55px;
+  flex-shrink: 0;
   border: 1px solid transparent;
   border-radius: 10px 10px 6px 6px;
   display: flex;
@@ -396,7 +380,7 @@
   gap: 3px;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .seat span {
@@ -411,6 +395,8 @@
 .seat.available:hover {
   transform: translateY(-3px);
 }
+
+/* Seat categories */
 
 .seat.standard {
   background: #e8f7ef;
@@ -436,12 +422,24 @@
   border-color: #d9c9ff;
 }
 
-.seat.occupied {
+.seat.occupied,
+.seat.assigned {
   background: #e2e8f0;
-  color: #94a3b8;
-  border-color: #d1d9e4;
+  color: #64748b;
+  border-color: #cbd5e1;
   cursor: not-allowed;
-  opacity: 0.8;
+  opacity: 0.85;
+}
+
+.seat.selected {
+  background: #2864dc;
+  color: #ffffff;
+  border-color: #1749af;
+  box-shadow: 0 0 0 3px rgba(40, 100, 220, 0.16);
+}
+
+.seat.selected small {
+  color: #ffffff;
 }
 
 .aircraft-rear {
@@ -449,54 +447,9 @@
   margin-bottom: 0;
 }
 
-@media (max-width: 600px) {
-  .seat-map-heading {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .seat-map-card {
-    padding: 25px 12px;
-    align-items: flex-start;
-  }
-
-  .seat-column-labels,
-  .seat-row {
-    gap: 12px;
-  }
-
-  .seat-group {
-    gap: 5px;
-  }
-
-  .seat-column-labels .seat-group {
-    gap: 5px;
-  }
-
-  .seat-column-labels .seat-group span,
-  .seat {
-    width: 39px;
-  }
-
-  .seat {
-    height: 48px;
-  }
-
-  .seat span {
-    font-size: 10px;
-  }
-
-  .seat small {
-    font-size: 8px;
-  }
-
-  .row-number {
-    width: 20px;
-  }
-}
-
-
-/* Passenger and seat map layout */
+/* =========================================
+   PASSENGER PANEL
+========================================= */
 
 .booking-layout {
   display: grid;
@@ -649,37 +602,9 @@
   flex-shrink: 0;
 }
 
-.seat.assigned {
-  background: #e2e8f0;
-  color: #64748b;
-  border-color: #cbd5e1;
-  cursor: not-allowed;
-  opacity: 0.9;
-}
-
-.seat.selected {
-  background: #2864dc;
-  color: #ffffff;
-  border-color: #1749af;
-  box-shadow: 0 0 0 3px rgba(40, 100, 220, 0.16);
-}
-
-.seat.selected small {
-  color: #ffffff;
-}
-
-@media (max-width: 900px) {
-  .booking-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .passenger-panel {
-    width: 100%;
-  }
-}
-
-
-/* BOOKING SUMMARY */
+/* =========================================
+   BOOKING SUMMARY
+========================================= */
 
 .booking-summary {
   margin-top: 28px;
@@ -728,14 +653,21 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   padding: 16px 0;
   border-bottom: 1px solid #edf0f4;
 }
 
-.summary-passenger div {
+.summary-passenger-info,
+.summary-passenger-prices {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 6px;
+}
+
+.summary-passenger-prices {
+  align-items: flex-end;
+  flex-shrink: 0;
 }
 
 .summary-passenger strong {
@@ -748,11 +680,36 @@
   font-size: 12px;
 }
 
+.summary-breakdown {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px 0;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.summary-breakdown div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.summary-breakdown span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+.summary-breakdown strong {
+  color: #172033;
+  font-size: 14px;
+}
+
 .summary-total {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  margin-top: 5px;
   padding-top: 22px;
 }
 
@@ -778,18 +735,9 @@
   font-size: 25px;
 }
 
-@media (max-width: 600px) {
-  .booking-summary {
-    padding: 18px;
-  }
-
-  .summary-total > strong {
-    font-size: 21px;
-  }
-}
-
-
-/* MEAL SELECTION */
+/* =========================================
+   MEAL SELECTION
+========================================= */
 
 .meal-selection {
   margin-top: 24px;
@@ -829,13 +777,14 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 15px;
+  min-width: 0;
   padding: 20px;
   background: #ffffff;
   border: 1px solid #e8edf3;
   border-radius: 14px;
   cursor: pointer;
   text-align: left;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 
 .meal-card:hover {
@@ -902,6 +851,281 @@
   background: #2563eb;
 }
 
+/* =========================================
+   BOOKING ACTIONS
+========================================= */
+
+.confirm-booking-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 20px;
+  padding: 16px 24px;
+  border: none;
+  border-radius: 10px;
+  background: #2864dc;
+  color: #ffffff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.confirm-booking-button:hover {
+  background: #1749af;
+  transform: translateY(-2px);
+}
+
+.booking-error {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border: 1px solid #fecaca;
+  border-radius: 9px;
+  background: #fff1f2;
+  color: #b42318;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================
+   BOOKING CONFIRMATION
+========================================= */
+
+.confirmation-card {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 35px;
+  border: 1px solid #e9edf4;
+  border-radius: 18px;
+  background: #ffffff;
+  text-align: center;
+}
+
+.confirmation-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 75px;
+  height: 75px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  background: #e8f8ef;
+  color: #16834c;
+}
+
+.confirmation-card h1 {
+  margin: 15px 0 10px;
+  color: #142b50;
+  font-size: 30px;
+}
+
+.confirmation-message,
+.confirmation-date {
+  color: #718096;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.booking-reference {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 25px 0;
+  padding: 22px;
+  border: 1px dashed #c7d9ff;
+  border-radius: 12px;
+  background: #f5f8ff;
+}
+
+.booking-reference span {
+  color: #718096;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.booking-reference strong {
+  color: #2864dc;
+  font-size: 27px;
+  letter-spacing: 2px;
+}
+
+.confirmed-passengers {
+  margin-top: 25px;
+  text-align: left;
+}
+
+.confirmed-passengers h2 {
+  margin-bottom: 12px;
+  color: #142b50;
+  font-size: 20px;
+}
+
+.confirmed-passenger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid #e9edf4;
+}
+
+.confirmed-passenger div {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.confirmed-passenger strong {
+  color: #142b50;
+  font-size: 14px;
+}
+
+.confirmed-passenger span {
+  color: #718096;
+  font-size: 12px;
+}
+
+.confirmation-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.back-to-flights-button,
+.new-booking-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 20px;
+  border: 1px solid #2864dc;
+  border-radius: 9px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.back-to-flights-button {
+  background: #ffffff;
+  color: #2864dc;
+}
+
+.back-to-flights-button:hover {
+  background: #f1f5ff;
+}
+
+.new-booking-button {
+  background: #2864dc;
+  color: #ffffff;
+}
+
+.new-booking-button:hover {
+  background: #1749af;
+}
+
+/* =========================================
+   LAYOUT NOTIFICATION
+========================================= */
+
+.layout-notice {
+  margin: 12px 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #fff4df;
+  color: #8a5700;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* =========================================
+   ACCESSIBILITY
+========================================= */
+
+button:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(40, 100, 220, 0.35);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================
+   TABLET RESPONSIVENESS
+========================================= */
+
+@media (max-width: 900px) {
+  .booking-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .passenger-panel {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0 5%;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .mobile-menu {
+    display: block;
+  }
+
+  .main-content {
+    width: 92%;
+    margin: 30px auto;
+  }
+
+  .flight-heading {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
+
+  .flight-card {
+    flex-wrap: wrap;
+    padding: 20px;
+  }
+
+  .flight-route {
+    min-width: 100%;
+    order: 3;
+  }
+
+  .flight-date {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #e9edf4;
+    padding: 15px 0 0;
+  }
+}
+
+/* =========================================
+   MOBILE RESPONSIVENESS
+========================================= */
+
 @media (max-width: 700px) {
   .meal-options {
     grid-template-columns: 1fr;
@@ -912,50 +1136,75 @@
   }
 }
 
-/* BOOKING SUMMARY - MEAL PRICE DETAILS */
+@media (max-width: 600px) {
+  .seat-map-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 
-.summary-passenger-info,
-.summary-passenger-prices {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
+  .seat-map-card {
+    padding: 25px 12px;
+    align-items: flex-start;
+  }
 
-.summary-passenger-prices {
-  align-items: flex-end;
-}
+  .seat-column-labels,
+  .seat-row {
+    gap: 12px;
+  }
 
-.summary-passenger-prices span {
-  color: #64748b;
-  font-size: 12px;
-}
+  .seat-group {
+    gap: 5px;
+  }
 
-.summary-breakdown {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 18px 0;
-  border-bottom: 1px solid #edf0f4;
-}
+  .seat-column-labels .seat-group {
+    gap: 5px;
+  }
 
-.summary-breakdown div {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+  .seat-column-labels .seat-group span,
+  .seat {
+    width: 39px;
+  }
 
-.summary-breakdown span {
-  color: #64748b;
-  font-size: 14px;
-}
+  .seat {
+    height: 48px;
+  }
 
-.summary-breakdown strong {
-  color: #172033;
-  font-size: 14px;
-}
+  .seat span {
+    font-size: 10px;
+  }
 
-.summary-total {
-  margin-top: 5px;
+  .seat small {
+    font-size: 8px;
+  }
+
+  .row-number {
+    width: 20px;
+  }
+
+  .booking-summary {
+    padding: 18px;
+  }
+
+  .summary-total > strong {
+    font-size: 21px;
+  }
+
+  .confirmation-card {
+    padding: 22px 16px;
+  }
+
+  .confirmation-card h1 {
+    font-size: 25px;
+  }
+
+  .confirmation-actions {
+    flex-direction: column;
+  }
+
+  .back-to-flights-button,
+  .new-booking-button {
+    width: 100%;
+  }
 }
 
 @media (max-width: 500px) {
@@ -965,5 +1214,38 @@
 
   .summary-passenger-prices {
     text-align: right;
+  }
+}
+
+@media (max-width: 400px) {
+  .main-content {
+    width: 94%;
+    margin: 22px auto;
+  }
+
+  .seat-map-card {
+    padding: 20px 10px;
+  }
+
+  .flight-heading h1 {
+    font-size: 26px;
+  }
+
+  .booking-summary,
+  .meal-selection {
+    padding: 15px;
+  }
+
+  .summary-passenger {
+    align-items: flex-start;
+  }
+
+  .brand {
+    font-size: 22px;
+  }
+
+  .user-profile {
+    gap: 7px;
+    font-size: 12px;
   }
 }

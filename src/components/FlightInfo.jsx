@@ -3,19 +3,19 @@ import { Plane, Clock, ArrowRight } from "lucide-react";
 
 function FlightInfo() {
   return (
-    <section className="flight-info">
+    <section className="flight-info" aria-labelledby="flight-title">
       <div className="flight-heading">
         <div>
           <p className="eyebrow">YOUR JOURNEY</p>
-          <h1>Select your seats</h1>
+          <h1 id="flight-title">Select your seats</h1>
           <p className="subtitle">
             Choose your preferred seats and travel in comfort.
           </p>
         </div>
 
         <div className="flight-status">
-          <span className="status-dot"></span>
-          Flight confirmed
+          <span className="status-dot" aria-hidden="true"></span>
+          <span>Flight confirmed</span>
         </div>
       </div>
 
@@ -28,14 +28,19 @@ function FlightInfo() {
 
         <div className="flight-route">
           <span className="flight-duration">
-            <Clock size={14} /> 2h 15m
+            <Clock size={14} aria-hidden="true" />
+            2h 15m
           </span>
+
           <div className="route-line">
             <span></span>
-            <Plane size={20} />
+            <Plane size={20} aria-hidden="true" />
             <span></span>
           </div>
-          <span className="flight-number">FL 204 · Non-stop</span>
+
+          <span className="flight-number">
+            FL 204 · Non-stop
+          </span>
         </div>
 
         <div className="airport destination">

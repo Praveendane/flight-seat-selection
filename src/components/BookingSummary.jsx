@@ -1,86 +1,108 @@
 
-import { Receipt, Armchair, Users, Utensils } from "lucide-react";
+import { Receipt, Armchair, Users } from "lucide-react";
 import { getSeatPrice } from "../data/seats";
 
-const mealPrices = {
-  vegetarian: 250,
-  "non-vegetarian": 350,
-  none: 0,
+const MEAL_OPTIONS = {
+  vegetarian: {
+    name: "Vegetarian Meal",
+    price: 250,
+  },
+  "non-vegetarian": {
+    name: "Non-Vegetarian Meal",
+    price: 350,
+  },
+  none: {
+    name: "No Meal",
+    price: 0,
+  },
 };
 
-const mealNames = {
-  vegetarian: "Vegetarian Meal",
-  "non-vegetarian": "Non-Vegetarian Meal",
-  none: "No Meal",
-};
+const formatCurrency = (amount) =>
+  `₹${amount.toLocaleString("en-IN")}`;
+
+function getSeatDetails(seat) {
+  if (!seat) {
+    return { price: 0 };
+  }
+
+  // Accept seat labels from A to H.
+  const match = /^([1-8])([A-H])$/.exec(seat);
+
+  if (!match) {
+    return { price: 0 };
+  }
+
+  const [, row, letter] = match;
+
+  return {
+    price: getSeatPrice(Number(row), letter),
+  };
+}
 
 function BookingSummary({
   passengers,
   getPassengerSeat,
   getPassengerMeal,
 }) {
-  // Calculate seat and meal charges for every passenger.
   const passengerDetails = passengers.map((passenger) => {
     const seat = getPassengerSeat(passenger.id);
     const meal = getPassengerMeal(passenger.id);
 
-    const row = seat ? Number.parseInt(seat, 10) : null;
-    const letter = seat ? seat.replace(/[0-9]/g, "") : null;
+    const seatDetails = getSeatDetails(seat);
+    const mealDetails = MEAL_OPTIONS[meal] ?? MEAL_OPTIONS.none;
 
-    const seatPrice =
-      seat && row && letter
-        ? getSeatPrice(row, letter)
-        : 0;
-
-    const mealPrice = mealPrices[meal] ?? 0;
+    const seatPrice = seatDetails.price;
+    const mealPrice = mealDetails.price;
 
     return {
       ...passenger,
       seat,
-      meal,
+      mealName: mealDetails.name,
       seatPrice,
       mealPrice,
       total: seatPrice + mealPrice,
     };
   });
 
-  // Calculate total seat charges.
-  const totalSeatPrice = passengerDetails.reduce(
-    (total, passenger) => total + passenger.seatPrice,
-    0
+  const totals = passengerDetails.reduce(
+    (result, passenger) => ({
+      seatCharges: result.seatCharges + passenger.seatPrice,
+      mealCharges: result.mealCharges + passenger.mealPrice,
+    }),
+    {
+      seatCharges: 0,
+      mealCharges: 0,
+    }
   );
 
-  // Calculate total meal charges.
-  const totalMealPrice = passengerDetails.reduce(
-    (total, passenger) => total + passenger.mealPrice,
-    0
-  );
-
-  // Calculate the final booking total.
-  const grandTotal = totalSeatPrice + totalMealPrice;
+  const grandTotal = totals.seatCharges + totals.mealCharges;
 
   const assignedCount = passengerDetails.filter(
     (passenger) => passenger.seat
   ).length;
 
   return (
-    <section className="booking-summary">
+    <section className="booking-summary" aria-labelledby="summary-title">
       <div className="summary-heading">
         <div>
           <p className="eyebrow">YOUR BOOKING</p>
-          <h2>Booking Summary</h2>
+          <h2 id="summary-title">Booking Summary</h2>
         </div>
-        <Receipt size={22} />
+
+        <Receipt size={22} aria-hidden="true" />
       </div>
 
       <div className="summary-statistics">
         <div>
-          <Users size={17} />
-          <span>{passengers.length} Passengers</span>
+          <Users size={17} aria-hidden="true" />
+          <span>
+            {passengers.length}{" "}
+            {passengers.length === 1 ? "Passenger" : "Passengers"}
+          </span>
         </div>
 
         <div>
-          <Armchair size={17} />
+          <Armchair size={17} aria-hidden="true" />
           <span>
             {assignedCount} of {passengers.length} Seats Selected
           </span>
@@ -92,32 +114,26 @@ function BookingSummary({
           <div className="summary-passenger" key={passenger.id}>
             <div className="summary-passenger-info">
               <strong>{passenger.name}</strong>
-
-              <span>
-                Seat: {passenger.seat || "Not selected"}
-              </span>
-
-              <span>
-                Meal: {mealNames[passenger.meal] || "No Meal"}
-              </span>
+              <span>Seat: {passenger.seat || "Not selected"}</span>
+              <span>Meal: {passenger.mealName}</span>
             </div>
 
             <div className="summary-passenger-prices">
               <span>
-                Seat: {passenger.seatPrice === 0
+                Seat:{" "}
+                {passenger.seatPrice === 0
                   ? "Free"
-                  : `₹${passenger.seatPrice}`}
+                  : formatCurrency(passenger.seatPrice)}
               </span>
 
               <span>
-                Meal: {passenger.mealPrice === 0
+                Meal:{" "}
+                {passenger.mealPrice === 0
                   ? "Free"
-                  : `₹${passenger.mealPrice}`}
+                  : formatCurrency(passenger.mealPrice)}
               </span>
 
-              <strong>
-                ₹{passenger.total.toLocaleString("en-IN")}
-              </strong>
+              <strong>{formatCurrency(passenger.total)}</strong>
             </div>
           </div>
         ))}
@@ -126,12 +142,12 @@ function BookingSummary({
       <div className="summary-breakdown">
         <div>
           <span>Seat Charges</span>
-          <strong>₹{totalSeatPrice.toLocaleString("en-IN")}</strong>
+          <strong>{formatCurrency(totals.seatCharges)}</strong>
         </div>
 
         <div>
           <span>Meal Charges</span>
-          <strong>₹{totalMealPrice.toLocaleString("en-IN")}</strong>
+          <strong>{formatCurrency(totals.mealCharges)}</strong>
         </div>
       </div>
 
@@ -141,9 +157,7 @@ function BookingSummary({
           <small>Including seats and meals</small>
         </div>
 
-        <strong>
-          ₹{grandTotal.toLocaleString("en-IN")}
-        </strong>
+        <strong>{formatCurrency(grandTotal)}</strong>
       </div>
     </section>
   );

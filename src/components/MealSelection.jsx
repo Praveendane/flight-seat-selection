@@ -43,7 +43,7 @@ function MealSelection({
           </p>
         </div>
 
-        <Utensils size={23} />
+        <Utensils size={23} aria-hidden="true" />
       </div>
 
       <div className="meal-options">
@@ -58,9 +58,12 @@ function MealSelection({
               className={`meal-card ${isSelected ? "selected" : ""}`}
               onClick={() => onMealSelect(meal.id)}
               aria-pressed={isSelected}
+              aria-label={`${meal.name}, ${
+                meal.price === 0 ? "Free" : `₹${meal.price}`
+              }`}
             >
               <div className="meal-icon">
-                <MealIcon size={23} />
+                <MealIcon size={23} aria-hidden="true" />
               </div>
 
               <div className="meal-details">
@@ -72,7 +75,7 @@ function MealSelection({
                 {meal.price === 0 ? "Free" : `₹${meal.price}`}
               </div>
 
-              <div className="meal-radio">
+              <div className="meal-radio" aria-hidden="true">
                 {isSelected && <span />}
               </div>
             </button>

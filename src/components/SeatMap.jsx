@@ -16,7 +16,7 @@ function SeatMap({
   const seatGroups =
     layout === "3-2"
       ? [["A", "B", "C"], ["D", "E"]]
-      : [["A", "B"], ["C", "D", "E"], ["F", "G"]];
+      : [["A", "B"], ["D", "E", "F"], ["G", "H"]];
 
   // Generate eight rows.
   const rows = Array.from({ length: 8 }, (_, index) => index + 1);

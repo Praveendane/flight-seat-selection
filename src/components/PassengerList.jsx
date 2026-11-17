@@ -17,14 +17,18 @@ function PassengerList({
           <h2>Passengers</h2>
         </div>
 
-        <Users size={21} />
+        <Users size={21} aria-hidden="true" />
       </div>
 
-      <label className="passenger-count-label">
+      <label
+        className="passenger-count-label"
+        htmlFor="passenger-count"
+      >
         Number of passengers
       </label>
 
       <select
+        id="passenger-count"
         className="passenger-count-select"
         value={passengers.length}
         onChange={(event) =>
@@ -49,11 +53,13 @@ function PassengerList({
               className={`passenger-item ${isActive ? "active" : ""}`}
             >
               <button
+                type="button"
                 className="passenger-select"
                 onClick={() => onPassengerChange(passenger.id)}
+                aria-pressed={isActive}
               >
                 <div className="passenger-avatar">
-                  <UserRound size={19} />
+                  <UserRound size={19} aria-hidden="true" />
                 </div>
 
                 <div className="passenger-details">
@@ -69,15 +75,13 @@ function PassengerList({
 
               {assignedSeat && (
                 <button
+                  type="button"
                   className="remove-seat-button"
-                  onClick={() => {
-                    onPassengerChange(passenger.id);
-                    onRemoveSeat(passenger.id);
-                  }}
+                  onClick={() => onRemoveSeat(passenger.id)}
                   title="Remove assigned seat"
                   aria-label={`Remove seat ${assignedSeat} from ${passenger.name}`}
                 >
-                  <Trash2 size={16} />
+                  <Trash2 size={16} aria-hidden="true" />
                 </button>
               )}
 
@@ -90,7 +94,7 @@ function PassengerList({
       </div>
 
       <div className="assignment-instruction">
-        <Armchair size={18} />
+        <Armchair size={18} aria-hidden="true" />
         <span>Select a passenger, then choose a seat.</span>
       </div>
     </section>
