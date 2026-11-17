@@ -39,31 +39,25 @@ The application uses local state and does not require backend integration.
 - React Hooks (`useState`)
 
 ## Application Screenshots
+## Application Screenshots
 
 ### Main Interface
-
 ![Main Application Interface](public/screenshots/01-main-interface.png)
 
-### 3–2 Aircraft Configuration
+### Passenger Management
+![Passenger Management](public/screenshots/02-passenger.management.png)
 
-![3–2 Seat Layout](public/screenshots/02-layout-3-2.png)
+### Seat Selection
+![Seat Selection](public/screenshots/03-seat-selection.png)
 
 ### 2–3–2 Aircraft Configuration
-
-![2–3–2 Seat Layout](public/screenshots/03-layout-2-3-2.png)
-
-### Passenger Management
-
-![Passenger Management](public/screenshots/04-passenger-management.png)
+![2–3–2 Seat Layout](public/screenshots/04-layout-2-3-2.png)
 
 ### Booking Summary and Pricing
-
 ![Booking Summary](public/screenshots/05-booking-summary.png)
 
 ### Booking Confirmation
-
 ![Booking Confirmation](public/screenshots/06-booking-confirmation.png)
-
 ## State Management and Seat Assignment Logic
 
 The application uses React's `useState` hook through a custom `useSeatSelection` hook to manage passenger and seat-selection data.
