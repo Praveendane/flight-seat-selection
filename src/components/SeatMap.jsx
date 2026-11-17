@@ -5,15 +5,24 @@ import {
   isSeatOccupied,
 } from "../data/seats";
 
-function SeatMap({ layout, onLayoutChange }) {
-  // Define the seating groups for each aircraft configuration.
+function SeatMap({
+  layout,
+  onLayoutChange,
+  assignments,
+  activePassengerId,
+  onSeatSelect,
+}) {
+  // Define seat groups based on the aircraft configuration.
   const seatGroups =
     layout === "3-2"
       ? [["A", "B", "C"], ["D", "E"]]
       : [["A", "B"], ["C", "D", "E"], ["F", "G"]];
 
-  // Generate 8 rows of seats.
+  // Generate eight rows.
   const rows = Array.from({ length: 8 }, (_, index) => index + 1);
+
+  // Get the active passenger's assigned seat.
+  const selectedSeat = assignments[activePassengerId];
 
   return (
     <section className="seat-map-section">
@@ -22,7 +31,7 @@ function SeatMap({ layout, onLayoutChange }) {
           <p className="eyebrow">AIRCRAFT LAYOUT</p>
           <h2>Select your preferred seat</h2>
           <p className="subtitle">
-            Choose a seating configuration to explore available seats.
+            Selecting for {activePassengerId}
           </p>
         </div>
 
@@ -75,17 +84,35 @@ function SeatMap({ layout, onLayoutChange }) {
                     const category = getSeatCategory(price);
                     const occupied = isSeatOccupied(seatId);
 
+                    const assignedPassenger = Object.entries(
+                      assignments
+                    ).find(([, assignedSeat]) => assignedSeat === seatId)?.[0];
+
+                    const assignedToOther =
+                      assignedPassenger &&
+                      assignedPassenger !== activePassengerId;
+
+                    const isSelected = selectedSeat === seatId;
+
+                    const isUnavailable =
+                      occupied || Boolean(assignedToOther);
+
                     return (
                       <button
                         key={seatId}
                         className={`seat ${category} ${
-                          occupied ? "occupied" : "available"
+                          occupied
+                            ? "occupied"
+                            : assignedToOther
+                              ? "assigned"
+                              : isSelected
+                                ? "selected"
+                                : "available"
                         }`}
-                        disabled={occupied}
+                        disabled={isUnavailable}
+                        onClick={() => onSeatSelect(seatId)}
                         title={`${seatId} - ₹${price}`}
-                        aria-label={`${seatId}, ${
-                          occupied ? "Occupied" : "Available"
-                        }, ₹${price}`}
+                        aria-label={`${seatId}, ₹${price}`}
                       >
                         <span>{seatId}</span>
                         <small>₹{price}</small>

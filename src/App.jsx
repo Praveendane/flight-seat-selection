@@ -4,12 +4,27 @@ import { useState } from "react";
 import Header from "./components/Header";
 import FlightInfo from "./components/FlightInfo";
 import SeatMap from "./components/SeatMap";
+import PassengerList from "./components/PassengerList";
+
+import useSeatSelection from "./hooks/useSeatSelection";
 
 import "./App.css";
 
 function App() {
-  // Store the currently selected aircraft configuration.
+  // Store the aircraft configuration.
   const [layout, setLayout] = useState("3-2");
+
+  // Get passenger and seat assignment functionality.
+  const {
+    passengers,
+    activePassengerId,
+    setActivePassengerId,
+    assignments,
+    updatePassengerCount,
+    assignSeat,
+    removeSeat,
+    getPassengerSeat,
+  } = useSeatSelection();
 
   return (
     <div className="app-container">
@@ -18,10 +33,24 @@ function App() {
       <main className="main-content">
         <FlightInfo />
 
-        <SeatMap
-          layout={layout}
-          onLayoutChange={setLayout}
-        />
+        <div className="booking-layout">
+          <PassengerList
+            passengers={passengers}
+            activePassengerId={activePassengerId}
+            onPassengerChange={setActivePassengerId}
+            onPassengerCountChange={updatePassengerCount}
+            getPassengerSeat={getPassengerSeat}
+            onRemoveSeat={removeSeat}
+          />
+
+          <SeatMap
+            layout={layout}
+            onLayoutChange={setLayout}
+            assignments={assignments}
+            activePassengerId={activePassengerId}
+            onSeatSelect={assignSeat}
+          />
+        </div>
       </main>
     </div>
   );
