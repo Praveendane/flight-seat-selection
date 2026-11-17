@@ -677,3 +677,113 @@
     width: 100%;
   }
 }
+
+
+/* BOOKING SUMMARY */
+
+.booking-summary {
+  margin-top: 28px;
+  padding: 26px;
+  background: #ffffff;
+  border: 1px solid #e8edf3;
+  border-radius: 18px;
+}
+
+.summary-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+}
+
+.summary-heading h2 {
+  margin-top: 5px;
+  font-size: 21px;
+  color: #172033;
+}
+
+.summary-statistics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 15px 0;
+  border-top: 1px solid #edf0f4;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.summary-statistics div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #64748b;
+  font-size: 13px;
+}
+
+.summary-passengers {
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-passenger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid #edf0f4;
+}
+
+.summary-passenger div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.summary-passenger strong {
+  color: #172033;
+  font-size: 14px;
+}
+
+.summary-passenger span {
+  color: #8490a2;
+  font-size: 12px;
+}
+
+.summary-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 22px;
+}
+
+.summary-total div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.summary-total span {
+  color: #172033;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.summary-total small {
+  color: #8490a2;
+  font-size: 12px;
+}
+
+.summary-total > strong {
+  color: #087f5b;
+  font-size: 25px;
+}
+
+@media (max-width: 600px) {
+  .booking-summary {
+    padding: 18px;
+  }
+
+  .summary-total > strong {
+    font-size: 21px;
+  }
+}

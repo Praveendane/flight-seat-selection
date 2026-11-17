@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import FlightInfo from "./components/FlightInfo";
 import SeatMap from "./components/SeatMap";
 import PassengerList from "./components/PassengerList";
+import BookingSummary from "./components/BookingSummary";
 
 import useSeatSelection from "./hooks/useSeatSelection";
 
@@ -51,6 +52,9 @@ function App() {
             onSeatSelect={assignSeat}
           />
         </div>
+        <BookingSummary
+        passengers={passengers}
+        getPassengerSeat={getPassengerSeat}/>
       </main>
     </div>
   );
